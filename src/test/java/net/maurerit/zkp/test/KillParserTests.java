@@ -26,17 +26,6 @@ public class KillParserTests {
     
     public static KillParser killParser = new KillParser();
     
-    public KillParserTests ( ) {
-        Authenticator authenticator = new Authenticator() {
-
-            public PasswordAuthentication getPasswordAuthentication() {
-                return (new PasswordAuthentication("mm66053",
-                        "INoLikeNewPas2".toCharArray()));
-            }
-        };
-        Authenticator.setDefault(authenticator);
-    }
-    
     @Test
     public void parseKill39865102FromXML ( ) throws IOException {
 //        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("cdcproxy.kroger.com",3128));
