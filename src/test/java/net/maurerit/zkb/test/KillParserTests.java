@@ -20,6 +20,8 @@ import java.net.URL;
 import java.util.List;
 import net.maurerit.zkb.KillParser;
 import net.maurerit.zkb.data.Kill;
+import net.maurerit.zkb.util.MockApi;
+import net.maurerit.zkb.util.TestBase;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -28,25 +30,27 @@ import static org.junit.Assert.assertEquals;
  *
  * @author maurerit
  */
-public class KillParserTests {
+public class KillParserTests extends TestBase {
     
     public static KillParser killParser = new KillParser();
     
-    @Test
-    public void parseKill39865102FromXML ( ) throws IOException {
-//        URL url = new URL("https://zkillboard.com/api/killID/39865102/xml/");
-//        List<Kill> kill = KillParser.parse(uc.getInputStream(), true);
+//    @Test
+    public void parseKill39865102FromXML ( ) {
     }
     
     @Test
-    public void parseKill39865102FromJSON ( ) throws IOException {
-        URL url = new URL("https://zkillboard.com/api/killID/39865102/");
+    public void parseKill39865102 ( ) throws IOException, Exception {
+        String resourcePath = "killID/39865102";
+        super.setup(resourcePath);
+        URL url = new URL(MockApi.URL + resourcePath + "/");
         List<Kill> kills = killParser.parse(url.openStream(), false);
     }
     
     @Test
-    public void parseKill39865102FromJSONNoAttackers ( ) throws IOException {
-        URL url = new URL("https://zkillboard.com/api/no-attackers/killID/39865102/");
+    public void parseKill39865102NoAttackers ( ) throws IOException, Exception {
+        String resourcePath = "no-attackers/killID/39865102";
+        super.setup(resourcePath);
+        URL url = new URL(MockApi.URL + resourcePath + "/");
         List<Kill> kills = killParser.parse(url.openStream(), false);
         
         Kill kill = kills.get(0);
@@ -55,8 +59,10 @@ public class KillParserTests {
     }
     
     @Test
-    public void parseKill39865102FromJSONNoItems ( ) throws IOException {
-        URL url = new URL("https://zkillboard.com/api/no-items/killID/39865102/");
+    public void parseKill39865102NoItems ( ) throws IOException, Exception {
+        String resourcePath = "no-items/killID/39865102";
+        super.setup(resourcePath);
+        URL url = new URL(MockApi.URL + resourcePath + "/");
         List<Kill> kills = killParser.parse(url.openStream(), false);
         
         Kill kill = kills.get(0);
@@ -65,10 +71,12 @@ public class KillParserTests {
     }
     
     @Test
-    public void getMarqAideronsKills ( ) throws IOException {
-        URL url = new URL("https://zkillboard.com/api/characterID/93461829/page/2");
+    public void page2OfMarqAideronsKills ( ) throws IOException, Exception {
+        String resourcePath = "characterID/93461829/page/2";
+        super.setup(resourcePath);
+        URL url = new URL(MockApi.URL + resourcePath + "/");
         List<Kill> kills = killParser.parse(url.openStream(), false);
         
-        System.out.println(kills.size());
+        assertEquals("Page 2 of kills should be 146", 146, kills.size());
     }
 }

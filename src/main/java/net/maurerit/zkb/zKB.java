@@ -16,7 +16,10 @@
 package net.maurerit.zkb;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,6 +34,8 @@ import net.maurerit.zkb.data.Kill;
 public class zKB {
     public static final String ROOT_URL = "https://zkillboard.com/api/";
     
+    public static final String DELIMITER = "/";
+    
     //Limit Modifiers
     public static final String LIMIT_MODIFIER = "limit/";
     public static final String PAGE_MODIFIER = "page/";
@@ -38,6 +43,7 @@ public class zKB {
     public static final String ET_MODIFIER = "endTime/";
     public static final String YEAR_MODIFIER = "year/";
     public static final String MONTH_MODIFIER = "month/";
+    public static final String WEEK_MODIFIER = "week/";
     public static final String BKID_MODIFIER = "beforeKillID/";
     public static final String AKID_MODIFIER = "afterKillID/";
     public static final String PS_MODIFIER = "pastSeconds/";
@@ -51,6 +57,7 @@ public class zKB {
     
     //Order Modifiers
     public static final String ORDER_MODIFIER = "orderDirection/";
+    public static final String ORDER_DESC_STR = "desc";
     
     //Fetch Modifiers
     public static final String CHAR_ID_MODIFIER = "characterID/";
@@ -73,7 +80,11 @@ public class zKB {
     public static final Integer PAGE_REQUEST_MAX = 10;
     public static final DateFormat format = new SimpleDateFormat("YYYYMMddHHmm");
     
+    private static String url;
+    
     private KillParser parser = new KillParser();
+    private Proxy proxy;
+    private HttpURLConnection uc;
     private Integer limit;
     private Integer page;
     private String startTime;
@@ -101,8 +112,17 @@ public class zKB {
     private boolean noAttackers = false;
     private boolean apiOnly = false;
     
+    public static void setUrl ( String url ) {
+        zKB.url = url;
+    }
+    
+    public zKB proxy ( Proxy proxy ) {
+        this.proxy = proxy;
+        return this;
+    }
+    
     public zKB limit(int limit) {
-        //TODO: Add validation against PAGE_REQUEST_MAX
+        //TODO: Add validation against RESULT_SET_LIMIT
         this.limit = limit;
         return this;
     }
@@ -281,10 +301,184 @@ public class zKB {
         String fetchUrlString = buildUrl();
         URL fetchUrl = new URL(fetchUrlString);
         
-        return parser.parse(fetchUrl.openStream(), false);
+        InputStream stream = openStream(fetchUrl);
+        
+        List<Kill> kills = parser.parse(stream, false);
+        
+        if ( uc != null ) {
+            uc.disconnect();
+            uc = null;
+        }
+        
+        return kills;
     }
     
     private String buildUrl ( ) {
-        return ROOT_URL;
+        StringBuilder fetchString = new StringBuilder();
+        
+        fetchString.append(url);
+        
+        if ( !url.endsWith(DELIMITER) ) {
+            fetchString.append(DELIMITER);
+        }
+        
+        if ( noItems ) {
+            fetchString.append(NO_ITEMS_MODIFIER);
+        }
+        
+        if ( noAttackers ) {
+            fetchString.append(NO_ATTACKERS_MODIFIER);
+        }
+        
+        if ( apiOnly ) {
+            fetchString.append(API_ONLY_MODIFER);
+        }
+        
+        if ( limit != null ) {
+            fetchString.append(LIMIT_MODIFIER)
+                       .append(limit)
+                       .append(DELIMITER);
+        }
+        
+        if ( page != null && limit == null ) {
+            fetchString.append(PAGE_MODIFIER)
+                       .append(page)
+                       .append(DELIMITER);
+        }
+        
+        if ( startTime != null ) {
+            fetchString.append(ST_MODIFIER)
+                       .append(startTime)
+                       .append(DELIMITER);
+        }
+        
+        if ( endTime != null ) {
+            fetchString.append(ET_MODIFIER)
+                       .append(endTime)
+                       .append(DELIMITER);
+        }
+        
+        if ( year != null ) {
+            fetchString.append(YEAR_MODIFIER)
+                       .append(year)
+                       .append(DELIMITER);
+        }
+        
+        if ( month != null && year != null ) {
+            fetchString.append(MONTH_MODIFIER)
+                       .append(month)
+                       .append(DELIMITER);
+        }
+        
+        if ( week != null && year != null ) {
+            fetchString.append(WEEK_MODIFIER)
+                       .append(week)
+                       .append(DELIMITER);
+        }
+        
+        if ( beforeKillID != null ) {
+            fetchString.append(BKID_MODIFIER)
+                       .append(beforeKillID)
+                       .append(DELIMITER);
+        }
+        
+        if ( afterKillID != null ) {
+            fetchString.append(AKID_MODIFIER)
+                       .append(afterKillID)
+                       .append(DELIMITER);
+        }
+        
+        if ( pastSeconds != null && pastSeconds <= PAST_SECONDS_LIMIT ) {
+            fetchString.append(PAST_SECONDS_LIMIT)
+                       .append(pastSeconds)
+                       .append(DELIMITER);
+        }
+        
+        if ( killID != null ) {
+            fetchString.append(KILL_ID_MODIFIER)
+                       .append(killID)
+                       .append(DELIMITER);
+        }
+        
+        if ( killsOnly ) {
+            fetchString.append(KILLS_MODIFIER);
+        }
+        
+        if ( lossesOnly && !killsOnly ) {
+            fetchString.append(LOSSES_MODIFIER);
+        }
+        
+        if ( wSpaceOnly ) {
+            fetchString.append(W_SPACE_MODIFIER);
+        }
+        
+        if ( soloOnly ) {
+            fetchString.append(SOLO_MODIFIER);
+        }
+        
+        if ( !orderAscending ) {
+            fetchString.append(ORDER_MODIFIER)
+                       .append(ORDER_DESC_STR)
+                       .append(DELIMITER);
+        }
+        
+        if ( characterID != null ) {
+            fetchString.append(CHAR_ID_MODIFIER)
+                       .append(characterID)
+                       .append(DELIMITER);
+        }
+        
+        if ( corporationID != null ) {
+            fetchString.append(CORP_ID_MODIFIER)
+                       .append(corporationID)
+                       .append(DELIMITER);
+        }
+        
+        if ( allianceID != null ) {
+            fetchString.append(ALLIANCE_ID_MODIFIER)
+                       .append(allianceID)
+                       .append(DELIMITER);
+        }
+        
+        if ( factionID != null ) {
+            fetchString.append(FACTION_ID_MODIFIER)
+                       .append(factionID)
+                       .append(DELIMITER);
+        }
+        
+        if ( shipTypeID != null ) {
+            fetchString.append(SHIP_TYPE_ID_MODIFIER)
+                       .append(shipTypeID)
+                       .append(DELIMITER);
+        }
+        
+        if ( groupID != null ) {
+            fetchString.append(GROUP_ID_MODIFIER)
+                       .append(groupID)
+                       .append(DELIMITER);
+        }
+        
+        if ( solarSystemID != null ) {
+            fetchString.append(SOLOR_SYS_ID_MODIFIER)
+                       .append(solarSystemID)
+                       .append(DELIMITER);
+        }
+        
+        return fetchString.toString();
+    }
+    
+    private InputStream openStream ( URL url ) throws IOException {
+        InputStream stream;
+        
+        if ( proxy != null ) {
+            uc = (HttpURLConnection)url.openConnection(proxy);
+            uc.connect();
+            stream = uc.getInputStream();
+        }
+        else {
+            stream = url.openStream();
+        }
+        
+        return stream;
     }
 }
