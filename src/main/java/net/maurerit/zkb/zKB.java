@@ -15,6 +15,9 @@
  */
 package net.maurerit.zkb;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -87,58 +90,72 @@ public class zKB {
     private boolean wSpaceOnly = false;
     private boolean soloOnly = false;
     private boolean orderAscending = true;
-    private Integer characterID;
-    private Integer corporationID;
-    private Integer allianceID;
-    private Integer factionID;
-    private Integer shipTypeID;
-    private Integer groupID;
-    private Integer solarSystemID;
+    private Long characterID;
+    private Long corporationID;
+    private Long allianceID;
+    private Long factionID;
+    private Long shipTypeID;
+    private Long groupID;
+    private Long solarSystemID;
     private boolean noItems = false;
     private boolean noAttackers = false;
     private boolean apiOnly = false;
     
     public zKB limit(int limit) {
+        //TODO: Add validation against PAGE_REQUEST_MAX
+        this.limit = limit;
         return this;
     }
     
     public zKB page(int page) {
+        //TODO: Add validation against PAGE_REQUEST_MAX
+        this.page = page;
         return this;
     }
     
     public zKB startTime ( Date date ) {
+        this.startTime = format.format(date);
         return this;
     }
     
     public zKB endTime ( Date date ) {
+        this.endTime = format.format(date);
         return this;
     }
     
     public zKB year ( int year ) {
+        //TODO: Add in sane validation... EVE didn't exist before 2003 :P
+        this.year = Integer.toString(year);
         return this;
     }
     
     public zKB month ( int month ) {
+        this.month = Integer.toString(month);
         return this;
     }
     
     public zKB week ( int week ) {
+        this.week = Integer.toString(week);
         return this;
     }
     
-    public zKB beforeKillID ( int killID ) {
+    public zKB beforeKillID ( long killID ) {
+        this.beforeKillID = killID;
         return this;
     }
     
-    public zKB afterKillID ( int killID ) {
+    public zKB afterKillID ( long killID ) {
+        this.afterKillID = killID;
         return this;
     }
     
     public zKB pastSeconds ( int pastSeconds ) {
+        this.pastSeconds = pastSeconds;
         return this;
     }
     
-    public zKB killID ( int killID ) {
+    public zKB killID ( long killID ) {
+        this.killID = killID;
         return this;
     }
     
@@ -186,8 +203,85 @@ public class zKB {
         return this;
     }
     
-    public List<Kill> fetch ( ) {
-        return null;
+    public zKB orderAscending ( ) {
+        if ( orderAscending ) {
+            orderAscending = false;
+        }
+        else {
+            orderAscending = true;
+        }
+        
+        return this;
+    }
+    
+    public zKB characterID ( long characterID ) {
+        this.characterID = characterID;
+        return this;
+    }
+    
+    public zKB allianceID ( long allianceID ) {
+        this.allianceID = allianceID;
+        return this;
+    }
+    
+    public zKB factionID ( long factionID ) {
+        this.factionID = factionID;
+        return this;
+    }
+    
+    public zKB shipTypeID ( long shipTypeID ) {
+        this.shipTypeID = shipTypeID;
+        return this;
+    }
+    
+    public zKB groupID ( long groupID ) {
+        this.groupID = groupID;
+        return this;
+    }
+    
+    public zKB solarSystemID ( long solarSystemID ) {
+        this.solarSystemID = solarSystemID;
+        return this;
+    }
+    
+    public zKB noItems ( ) {
+        if ( noItems ) {
+            noItems = false;
+        }
+        else {
+            noItems = true;
+        }
+        
+        return this;
+    }
+    
+    public zKB noAttackers ( ) {
+        if ( noAttackers ) {
+            noAttackers = false;
+        }
+        else {
+            noAttackers = true;
+        }
+        
+        return this;
+    }
+    
+    public zKB apiOnly ( ) {
+        if ( apiOnly ) {
+            apiOnly = false;
+        }
+        else {
+            apiOnly = true;
+        }
+        
+        return this;
+    }
+    
+    public List<Kill> fetch ( ) throws MalformedURLException, IOException {
+        String fetchUrlString = buildUrl();
+        URL fetchUrl = new URL(fetchUrlString);
+        
+        return parser.parse(fetchUrl.openStream(), false);
     }
     
     private String buildUrl ( ) {
