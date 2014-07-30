@@ -18,65 +18,39 @@ package net.maurerit.zkb.test;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import net.maurerit.zkb.KillParser;
 import net.maurerit.zkb.data.Kill;
 import net.maurerit.zkb.util.MockApi;
 import net.maurerit.zkb.util.TestBase;
-import org.junit.Test;
-
+import net.maurerit.zkb.zKB;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
  * @author maurerit
  */
-public class KillParserTests extends TestBase {
-    
-    public static KillParser killParser = new KillParser();
-    
-//    @Test
-    public void parseKill39865102FromXML ( ) {
-    }
+public class zKBTest extends TestBase {
     
     @Test
     public void parseKill39865102 ( ) throws IOException, Exception {
         String resourcePath = "killID/39865102";
         super.setup(resourcePath);
-        URL url = new URL(MockApi.URL + resourcePath + "/");
-        List<Kill> kills = killParser.parse(url.openStream(), false);
+        zKB zkb = new zKB();
+        List<Kill> kills = zkb.killID(39865102).fetch();
+        
+        assertEquals("Should be one kill", 1, kills.size());
+        assertEquals("Should be 2 attakcers", 2, kills.get(0).getAttackers().size());
     }
     
     @Test
     public void parseKill39865102NoAttackers ( ) throws IOException, Exception {
         String resourcePath = "no-attackers/killID/39865102";
         super.setup(resourcePath);
-        URL url = new URL(MockApi.URL + resourcePath + "/");
-        List<Kill> kills = killParser.parse(url.openStream(), false);
+        zKB zkb = new zKB();
+        List<Kill> kills = zkb.killID(39865102).attackers(false).fetch();
         
         Kill kill = kills.get(0);
         
         assertEquals("Attackers should be null", null, kill.getAttackers());
-    }
-    
-    @Test
-    public void parseKill39865102NoItems ( ) throws IOException, Exception {
-        String resourcePath = "no-items/killID/39865102";
-        super.setup(resourcePath);
-        URL url = new URL(MockApi.URL + resourcePath + "/");
-        List<Kill> kills = killParser.parse(url.openStream(), false);
-        
-        Kill kill = kills.get(0);
-        
-        assertEquals("Items should be null", null, kill.getItems());
-    }
-    
-    @Test
-    public void page2OfMarqAideronsKills ( ) throws IOException, Exception {
-        String resourcePath = "characterID/93461829/page/2";
-        super.setup(resourcePath);
-        URL url = new URL(MockApi.URL + resourcePath + "/");
-        List<Kill> kills = killParser.parse(url.openStream(), false);
-        
-        assertEquals("Page 2 of kills should be 146", 146, kills.size());
     }
 }

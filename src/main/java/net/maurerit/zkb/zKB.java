@@ -179,58 +179,28 @@ public class zKB {
         return this;
     }
     
-    public zKB kills ( ) {
-        if ( killsOnly ) {
-            killsOnly = false;
-        }
-        else {
-            killsOnly = true;
-        }
-        
+    public zKB kills ( boolean value ) {
+        killsOnly = value;
         return this;
     }
     
-    public zKB losses ( ) {
-        if ( lossesOnly ) {
-            lossesOnly = false;
-        }
-        else {
-            lossesOnly = true;
-        }
-        
+    public zKB losses ( boolean value ) {
+        lossesOnly = value;
         return this;
     }
     
-    public zKB wSpace ( ) {
-        if ( wSpaceOnly ) {
-            wSpaceOnly = false;
-        }
-        else {
-            wSpaceOnly = true;
-        }
-        
+    public zKB wSpace ( boolean value ) {
+        wSpaceOnly = value;
         return this;
     }
     
-    public zKB solo ( ) {
-        if ( soloOnly ) {
-            soloOnly = false;
-        }
-        else {
-            soloOnly = true;
-        }
-        
+    public zKB solo ( boolean value ) {
+        soloOnly = value;
         return this;
     }
     
-    public zKB orderAscending ( ) {
-        if ( orderAscending ) {
-            orderAscending = false;
-        }
-        else {
-            orderAscending = true;
-        }
-        
+    public zKB orderAscending ( boolean value ) {
+        orderAscending = value;
         return this;
     }
     
@@ -264,36 +234,18 @@ public class zKB {
         return this;
     }
     
-    public zKB noItems ( ) {
-        if ( noItems ) {
-            noItems = false;
-        }
-        else {
-            noItems = true;
-        }
-        
+    public zKB items ( boolean value ) {
+        noItems = !value;
         return this;
     }
     
-    public zKB noAttackers ( ) {
-        if ( noAttackers ) {
-            noAttackers = false;
-        }
-        else {
-            noAttackers = true;
-        }
-        
+    public zKB attackers ( boolean value ) {
+        noAttackers = !value;
         return this;
     }
     
-    public zKB apiOnly ( ) {
-        if ( apiOnly ) {
-            apiOnly = false;
-        }
-        else {
-            apiOnly = true;
-        }
-        
+    public zKB apiOnly ( boolean value ) {
+        apiOnly = value;
         return this;
     }
     

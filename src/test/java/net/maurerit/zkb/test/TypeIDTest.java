@@ -15,26 +15,19 @@
  */
 package net.maurerit.zkb.test;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
-import org.junit.*;
+import net.maurerit.zkb.data.TypeID;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
  * @author maurerit
  */
-public class zKBTests {
+public class TypeIDTest {
     
     @Test
-    public void parseKill39865102 ( ) throws IOException {
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("cdcproxy.kroger.com",3128));
-        URL url = new URL("https://zkillboard.com/api/killID/39865102/");
-        HttpURLConnection uc = (HttpURLConnection)url.openConnection(proxy);
-        uc.connect();
-//        List<Kill> kills = killParser.parse(uc.getInputStream(), false);
-        uc.disconnect();
+    public void findCorpse ( ) {
+        String value = TypeID.getTypeName(25);
+        assertEquals("Value should be 'Corpse'", "Corpse", value);
     }
 }
