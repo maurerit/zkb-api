@@ -112,6 +112,10 @@ public class zKB {
     private boolean noAttackers = false;
     private boolean apiOnly = false;
     
+    public zKB ( ) {
+        url = ROOT_URL;
+    }
+    
     public static void setUrl ( String url ) {
         zKB.url = url;
     }
