@@ -28,7 +28,7 @@ public class Character {
     private String allianceName;
     private int factionId;
     private String factionName;
-    private double securityStatus;
+    private Double securityStatus;
 
     /**
      * @return the characterId
@@ -145,14 +145,14 @@ public class Character {
     /**
      * @return the securityStatus
      */
-    public double getSecurityStatus() {
+    public Double getSecurityStatus() {
         return securityStatus;
     }
 
     /**
      * @param securityStatus the securityStatus to set
      */
-    public void setSecurityStatus(double securityStatus) {
+    public void setSecurityStatus(Double securityStatus) {
         this.securityStatus = securityStatus;
     }
 }

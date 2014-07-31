@@ -48,6 +48,10 @@ public class KillParser {
     public static final String ITEMS_KEY = "items";
     public static final String ZKB_KEY = "zkb";
     
+    //zkb node constants
+    public static final String TOTAL_VALUE_KEY = "totalValue";
+    public static final String POINTS_KEY = "points";
+    
     //Player related constants
     public static final String CHAR_ID_KEY = "characterID";
     public static final String CHAR_NAME_KEY = "characterName";
@@ -111,6 +115,8 @@ public class KillParser {
         parsedKill.setSolarSystemId(intFromText(node.get(SOLOR_SYS_KEY)));
         parsedKill.setMoonId(intFromText(node.get(MOON_ID_KEY)));
         parsedKill.setVictim(parseVictim(node.get(VICTIM_KEY)));
+        parsedKill.setTotalValue(doubleFromText(node.get(ZKB_KEY).get(TOTAL_VALUE_KEY)));
+        parsedKill.setPoints(longFromText(node.get(ZKB_KEY).get(POINTS_KEY)));
         
         if ( node.get(ATTACKERS_KEY) != null ) {
             parsedKill.setAttackers(parseAttackers(node.get(ATTACKERS_KEY)));
