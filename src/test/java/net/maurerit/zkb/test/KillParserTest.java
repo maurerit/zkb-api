@@ -28,9 +28,8 @@ import net.maurerit.zkb.data.Kill;
 import net.maurerit.zkb.data.Victim;
 import net.maurerit.zkb.util.MockApi;
 import net.maurerit.zkb.util.TestBase;
+import static org.junit.Assert.*;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  *
