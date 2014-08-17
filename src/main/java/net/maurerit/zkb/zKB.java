@@ -23,8 +23,11 @@ import java.net.Proxy;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+//import java.util.zip.GZIPInputStream;
 import net.maurerit.zkb.data.Kill;
 
 /**
@@ -101,6 +104,7 @@ public class zKB {
     private boolean wSpaceOnly = false;
     private boolean soloOnly = false;
     private boolean orderAscending = true;
+    //TODO: All these longs below should be lists allowing 10 of each one.
     private Long characterID;
     private Long corporationID;
     private Long allianceID;
@@ -111,6 +115,8 @@ public class zKB {
     private boolean noItems = false;
     private boolean noAttackers = false;
     private boolean apiOnly = false;
+    
+    private int currentPage = 1;
     
     public zKB ( ) {
         url = ROOT_URL;
@@ -213,6 +219,11 @@ public class zKB {
         return this;
     }
     
+    public zKB corporationID ( long corporationID ) {
+        this.corporationID = corporationID;
+        return this;
+    }
+    
     public zKB allianceID ( long allianceID ) {
         this.allianceID = allianceID;
         return this;
@@ -264,6 +275,24 @@ public class zKB {
         if ( uc != null ) {
             uc.disconnect();
             uc = null;
+        }
+        
+        return kills;
+    }
+    
+    public List<Kill> nextPage ( ) throws MalformedURLException, IOException {
+        return this.page(++currentPage).fetch();
+    }
+    
+    public List<Kill> until ( Calendar cal ) throws MalformedURLException, IOException {
+        List<Kill> kills = this.fetch();
+        
+        boolean keepGoing = true;
+        
+        while (keepGoing && kills.addAll(this.nextPage())) {
+            if (kills.get(kills.size() - 1).getKillTime().before(cal.getTime())) {
+                keepGoing = false;
+            }
         }
         
         return kills;
@@ -428,12 +457,16 @@ public class zKB {
         
         if ( proxy != null ) {
             uc = (HttpURLConnection)url.openConnection(proxy);
-            uc.connect();
-            stream = uc.getInputStream();
         }
         else {
-            stream = url.openStream();
+            uc = (HttpURLConnection)url.openConnection();
         }
+        
+//        uc.addRequestProperty("User-Agent", "zkb-scraper marq.aideron@gmail.com http://lowsecwonderer.blogspot.com");
+//        uc.addRequestProperty("Accept-Encoding", "gzip");
+        uc.connect();
+//        stream = new GZIPInputStream(uc.getInputStream());
+        stream = uc.getInputStream();
         
         return stream;
     }

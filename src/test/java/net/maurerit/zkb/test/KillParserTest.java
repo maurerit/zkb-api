@@ -21,6 +21,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+//import java.util.zip.GZIPInputStream;
 import net.maurerit.zkb.KillParser;
 import net.maurerit.zkb.data.Attacker;
 import net.maurerit.zkb.data.Item;
@@ -49,6 +50,7 @@ public class KillParserTest extends TestBase {
         String resourcePath = "killID/39865102";
         super.setup(resourcePath);
         URL url = new URL(MockApi.URL + resourcePath + "/");
+//        List<Kill> kills = killParser.parse(new GZIPInputStream(url.openStream()), false);
         List<Kill> kills = killParser.parse(url.openStream(), false);
         
         Date date = dateFormat.parse("20140703 04:05:00");
@@ -97,6 +99,7 @@ public class KillParserTest extends TestBase {
         String resourcePath = "killID/39865102baddate";
         super.setup(resourcePath);
         URL url = new URL(MockApi.URL + resourcePath + "/");
+//        List<Kill> kills = killParser.parse(new GZIPInputStream(url.openStream()), false);
         List<Kill> kills = killParser.parse(url.openStream(), false);
         assertEquals("Date should be null",null,kills.get(0).getKillTime());
     }
@@ -106,6 +109,7 @@ public class KillParserTest extends TestBase {
         String resourcePath = "no-attackers/killID/39865102";
         super.setup(resourcePath);
         URL url = new URL(MockApi.URL + resourcePath + "/");
+//        List<Kill> kills = killParser.parse(new GZIPInputStream(url.openStream()), false);
         List<Kill> kills = killParser.parse(url.openStream(), false);
         
         Kill kill = kills.get(0);
@@ -118,6 +122,7 @@ public class KillParserTest extends TestBase {
         String resourcePath = "no-items/killID/39865102";
         super.setup(resourcePath);
         URL url = new URL(MockApi.URL + resourcePath + "/");
+//        List<Kill> kills = killParser.parse(new GZIPInputStream(url.openStream()), false);
         List<Kill> kills = killParser.parse(url.openStream(), false);
         
         Kill kill = kills.get(0);
@@ -130,6 +135,7 @@ public class KillParserTest extends TestBase {
         String resourcePath = "characterID/93461829/page/2";
         super.setup(resourcePath);
         URL url = new URL(MockApi.URL + resourcePath + "/");
+//        List<Kill> kills = killParser.parse(new GZIPInputStream(url.openStream()), false);
         List<Kill> kills = killParser.parse(url.openStream(), false);
         
         assertEquals("Page 2 of kills should be 146", 146, kills.size());

@@ -16,7 +16,6 @@
 package net.maurerit.zkb.test;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import net.maurerit.zkb.data.Kill;
 import net.maurerit.zkb.util.MockApi;
@@ -36,6 +35,7 @@ public class zKBTest extends TestBase {
         String resourcePath = "killID/39865102";
         super.setup(resourcePath);
         zKB zkb = new zKB();
+        zKB.setUrl(MockApi.URL);
         List<Kill> kills = zkb.killID(39865102).fetch();
         
         assertEquals("Should be one kill", 1, kills.size());
@@ -47,6 +47,7 @@ public class zKBTest extends TestBase {
         String resourcePath = "no-attackers/killID/39865102";
         super.setup(resourcePath);
         zKB zkb = new zKB();
+        zKB.setUrl(MockApi.URL);
         List<Kill> kills = zkb.killID(39865102).attackers(false).fetch();
         
         Kill kill = kills.get(0);
