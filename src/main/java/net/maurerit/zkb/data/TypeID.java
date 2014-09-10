@@ -56,6 +56,12 @@ public class TypeID {
     }
     
     public static String getTypeName ( Integer key ) {
-        return typeIdMap.get(key);
+        String typeName = "UNKNOWN TYPE ID";
+        
+        if ( typeIdMap.containsKey(key) ) {
+            typeName = typeIdMap.get(key);
+        }
+        
+        return typeName;
     }
 }
